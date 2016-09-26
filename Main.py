@@ -11,9 +11,11 @@ import warnings
 import src
 import time
 import sys
+import pdb
 from smap import driver
 from smap.util import periodicSequentialCall
 from control import bacnet
+
 
 warnings.filterwarnings("ignore")
 
@@ -60,12 +62,15 @@ class VAV_Adaptive_control(driver.SmapDriver):
                 command = False
         
             zone_names = ['S4-%s' %(str(z).zfill(2)) for z in range(1,22)]
+            zones_to_exclude = ['S4-02', 'S4-04', 'S4-12','S4-13', 'S4-18', 'S4-21']            
             
             if (command and self.warning < 4):
-                for z in zone_names:
-                    self.bacnet_c.write('SDH.%s:HEAT.COOL', 'SDH.PXCM-11', self.heat)    
-                    self.bacnet_c.write('SDH.%s:CTL STPT', 'SDH.PXCM-11', self.setpt)    
-                    self.bacnet_c.write('SDH.%s:CTL FLOW MIN', 'SDH.PXCM-11', self.vent)    
+                for z in [z for z in zone_names if z not in zones_to_exclude]:
+                    print z
+                    #self.bacnet_c.write('SDH.%s:HEAT.COOL', 'SDH.PXCM-11', self.heat)    
+                    #self.bacnet_c.write('SDH.%s:CTL STPT', 'SDH.PXCM-11', self.setpt)    
+                    #self.bacnet_c.write('SDH.%s:CTL FLOW MIN', 'SDH.PXCM-11', self.vent)    
+                pdb.set_trace()
 
 #                self.bacnet_c.write('SDH.S4-02:HEAT.COOL', 'SDH.PXCM-11', self.heat)
 #                self.bacnet_c.write('SDH.S4-02:CTL STPT', 'SDH.PXCM-11', self.setpt)    
